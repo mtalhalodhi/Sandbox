@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://s3fsni1s4k8t"]
+
+[ext_resource type="Script" path="res://Nodes/WorldEditor.cs" id="1_h4p1e"]
+[ext_resource type="Script" path="res://Engine/World/World.cs" id="1_rcff0"]
+
+[node name="TestScene" type="Node2D"]
+
+[node name="Camera" type="Camera2D" parent="."]
+zoom = Vector2(4, 4)
+
+[node name="World" type="Node2D" parent="." node_paths=PackedStringArray("cam")]
+script = ExtResource("1_rcff0")
+cam = NodePath("../Camera")
+ChunkAreaSize = Vector2(660, 360)
+
+[node name="WorldEditor" type="Node2D" parent="." node_paths=PackedStringArray("world")]
+script = ExtResource("1_h4p1e")
+world = NodePath("../World")
