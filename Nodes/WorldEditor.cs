@@ -25,7 +25,7 @@ public partial class WorldEditor : Node2D
             {
                 for (int y = my - halfSize; y < my + halfSize; y++)
                 {
-                    world.SetPixel(x, y, Pixels.Sand);
+                    world[x, y] = Pixels.Sand;
                 }
             }
         }
@@ -36,7 +36,7 @@ public partial class WorldEditor : Node2D
             {
                 for (int y = my - halfSize; y < my + halfSize; y++)
                 {
-                    world.SetPixel(x, y, Pixels.Stone);
+                    world[x, y] = Pixels.Stone;
                 }
             }
         }
