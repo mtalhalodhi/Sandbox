@@ -1,7 +1,5 @@
 using Godot;
-using System;
 
-[Tool]
 public partial class Chunk : Sprite2D
 {
     private Pixel[] pixels;
@@ -10,6 +8,17 @@ public partial class Chunk : Sprite2D
 
     public int Size;
     public int X, Y;
+
+    private bool _dirty = false;
+    public bool Dirty
+    {
+        get => _dirty;
+        set
+        {
+            QueueRedraw();
+            _dirty = value;
+        }
+    }
 
     private int index(int x, int y)
     {
@@ -36,7 +45,7 @@ public partial class Chunk : Sprite2D
         get => this[(int)pos.X, (int)pos.Y];
         set => this[(int)pos.X, (int)pos.Y] = value;
     }
-
+    
     public override void _Ready()
     {
         X = (int)GlobalPosition.X;
@@ -56,11 +65,6 @@ public partial class Chunk : Sprite2D
         Texture = ImageTexture.CreateFromImage(image);
         TextureFilter = TextureFilterEnum.Nearest;
         Offset = new Vector2(Size / 2, Size / 2);
-    }
-
-    public void MarkForUpdate()
-    {
-        QueueRedraw();
     }
 
     public override void _Draw()

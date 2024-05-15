@@ -10,7 +10,7 @@ public partial class World : Node2D
 
 
     public List<Chunk> Chunks = new List<Chunk>();
-    public Dictionary<(int x, int y), Chunk> ChunkLookup = new Dictionary<(int x, int y), Chunk>();
+    public Dictionary<Vector2, Chunk> ChunkLookup = new Dictionary<Vector2, Chunk>();
 
 
     void RefreshChunks()
@@ -51,7 +51,7 @@ public partial class World : Node2D
     void RemoveChunk(Chunk chunk)
     {
         Chunks.Remove(chunk);
-        ChunkLookup.Remove((chunk.X, chunk.Y));
+        ChunkLookup.Remove(new Vector2(chunk.X, chunk.Y));
         chunk.QueueFree();
     }
 
@@ -63,11 +63,11 @@ public partial class World : Node2D
         return new Rect2(position, size);
     }
 
-    public (int x, int y) ChunkIndex(int x, int y)
+    public Vector2 ChunkIndex(int x, int y)
     {
         int cx = x >= 0 ? x / ChunkSize : (x - ChunkSize + 1) / ChunkSize;
         int cy = y >= 0 ? y / ChunkSize : (y - ChunkSize + 1) / ChunkSize;
-        return (cx * ChunkSize, cy * ChunkSize);
+        return new Vector2(cx * ChunkSize, cy * ChunkSize);
     }
 
     public Chunk ChunkAt(int x, int y)

@@ -1,31 +1,37 @@
 using Godot;
 
-[Tool]
 public partial class World : Node2D
 {
     public Pixel this[int x, int y]
     {
-        get => ChunkAt(x, y)[x, y];
+        get
+        {
+            var chunk = ChunkAt(x, y);
+            return chunk != null ? chunk[x, y] : Pixels.Air;
+        }
         set
         {
             var chunk = ChunkAt(x, y);
             chunk[x, y] = value;
-            chunk.MarkForUpdate();
+            chunk.Dirty = true;
         }
     }
 
-    public void Swap(int x1, int y1, int x2, int y2) {
+    public void SwapPixels(int x1, int y1, int x2, int y2)
+    {
         var swap = this[x1, y1];
         this[x1, y1] = this[x2, y2];
         this[x2, y2] = swap;
     }
 
+    public void MovePixelTo(int x1, int y1, int x2, int y2)
+    {
+        this[x2, y2] = this[x1, y1];
+    }
+
     public override void _Ready()
     {
         RefreshChunks();
-        foreach(var key in ChunkLookup.Keys) {
-            GD.Print(key);
-        }
     }
 
     public override void _Process(double delta)

@@ -6,7 +6,7 @@ public partial class World : Node2D
     {
         foreach (var chunk in Chunks)
         {
-            // processChunk(chunk);
+            if (chunk.Dirty) processChunk(chunk);
         }
     }
 
@@ -15,25 +15,36 @@ public partial class World : Node2D
         var xEnd = chunk.X + ChunkSize;
         var yEnd = chunk.Y + ChunkSize;
 
+        bool dirty = false;
+
         for (int x = chunk.X; x < xEnd; x++)
         {
             for (int y = chunk.Y; y < yEnd; y++)
             {
-                processPixelAt(x, y);
+                if (!processPixelAt(x, y)) {
+                    dirty = true;
+                }
             }
         }
+
+        chunk.Dirty = dirty;
     }
 
-    void processPixelAt(int x, int y)
+    bool processPixelAt(int x, int y)
     {
+        var updated = false;
+
         var pixel = this[x, y];
         var down = this[x, y + 1];
 
         if (pixel.Material == PixelMaterial.Powder)
         {
             if (down.Material == PixelMaterial.None || down.Material == PixelMaterial.Gas) {
-                Swap(x, y, x, y + 1);
+                SwapPixels(x, y, x, y + 1);
+                updated = true;
             }
         }
+
+        return updated;
     }
 }
