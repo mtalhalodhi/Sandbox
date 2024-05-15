@@ -53,6 +53,6 @@ public partial class World : Node2D
 
         var mouse = GetGlobalMousePosition();
         var chunk = ChunkAt((int)mouse.X, (int)mouse.Y);
-        if (chunk != null) DrawRect(new Rect2(chunk.X, chunk.Y, ChunkSize, ChunkSize), new Color(1, 1, 1, 0.04f));
+        if (chunk != null) DrawRect(new Rect2(chunk.X, chunk.Y, ChunkSize, ChunkSize), new Color(1, 1, 1, 0.1f));
     }
 }

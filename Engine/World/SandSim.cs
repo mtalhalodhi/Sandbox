@@ -16,6 +16,11 @@ public partial class World : Node2D
             if (chunk.Dirty) processChunk(chunk);
         }
 
+        foreach (var chunk in Chunks)
+        {
+            chunk.UpdateDirtyRect();
+        }
+
         foreach (var pair in moves)
         {
             var move = pair.Value;
@@ -25,13 +30,16 @@ public partial class World : Node2D
 
     void processChunk(Chunk chunk)
     {
-        var xEnd = chunk.X + ChunkSize;
-        var yEnd = chunk.Y + ChunkSize;
+        var xStart = (int)chunk.DirtyRectMin.X;
+        var yStart = (int)chunk.DirtyRectMin.Y;
+
+        var xEnd = (int)chunk.DirtyRectMax.X;
+        var yEnd = (int)chunk.DirtyRectMax.Y;
 
         bool processed = false;
-        for (int x = chunk.X; x < xEnd; x++)
+        for (int x = xStart; x < xEnd; x++)
         {
-            for (int y = chunk.Y; y < yEnd; y++)
+            for (int y = yStart; y < yEnd; y++)
             {
                 if (processPixelAt(x, y)) processed = true;
             }
@@ -45,31 +53,10 @@ public partial class World : Node2D
 
         var pixel = this[x, y];
         var down = this[x, y + 1];
-        var left = this[x - 1, y];
-        var right = this[x + 1, y];
         var downLeft = this[x - 1, y + 1];
         var downRight = this[x + 1, y + 1];
 
         if (pixel.Material == PixelMaterial.Powder)
-        {
-            if (down.Material == PixelMaterial.None || down.Material == PixelMaterial.Liquid)
-            {
-                addMove(x, y, x, y + 1);
-                processed = true;
-            }
-            else if (downLeft.Material == PixelMaterial.None || down.Material == PixelMaterial.Liquid)
-            {
-                addMove(x, y, x - 1, y + 1);
-                processed = true;
-            }
-            else if (downRight.Material == PixelMaterial.None || down.Material == PixelMaterial.Liquid)
-            {
-                addMove(x, y, x + 1, y + 1);
-                processed = true;
-            }
-        }
-
-        if (pixel.Material == PixelMaterial.Liquid)
         {
             if (down.Material == PixelMaterial.None)
             {
@@ -84,16 +71,6 @@ public partial class World : Node2D
             else if (downRight.Material == PixelMaterial.None)
             {
                 addMove(x, y, x + 1, y + 1);
-                processed = true;
-            }
-            else if (left.Material == PixelMaterial.None)
-            {
-                addMove(x, y, x - 1, y);
-                processed = true;
-            }
-            else if (right.Material == PixelMaterial.None)
-            {
-                addMove(x, y, x + 1, y);
                 processed = true;
             }
         }
