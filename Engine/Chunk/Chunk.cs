@@ -69,14 +69,11 @@ public partial class Chunk : Sprite2D
 
     public override void _Draw()
     {
-        if (Engine.IsEditorHint() || true)
-        {
-            DrawRect(new Rect2(0, 0, Size, Size), new Color(1, 1, 1, 0.05f), false);
-        }
+        DrawRect(new Rect2(0, 0, Size, Size), new Color(1, 1, 1, 0.05f), false);
+        ((ImageTexture)Texture).Update(image);
 
-        if (!Engine.IsEditorHint())
-        {
-            ((ImageTexture)Texture).Update(image);
+        if (_dirty) {
+            DrawRect(new Rect2(0, 0, Size, Size), new Color(1, .25f, .5f, 0.7f), false);
         }
     }
 }
