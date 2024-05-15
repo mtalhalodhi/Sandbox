@@ -20,9 +20,33 @@ public partial class World : Node2D
         this[x2, y2] = swap;
     }
 
-    public override void _Process(double delta)
+    public override void _Ready()
     {
         RefreshChunks();
+        foreach(var key in ChunkLookup.Keys) {
+            GD.Print(key);
+        }
+    }
+
+    public override void _Process(double delta)
+    {
         QueueRedraw();
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        processSandSim();
+    }
+
+    public override void _Draw()
+    {
+        // if (!Engine.IsEditorHint()) return;
+
+        var areaRect = GetChunkAreaRect();
+        DrawRect(areaRect, Colors.WhiteSmoke, false);
+
+        var mouse = GetGlobalMousePosition();
+        var chunk = ChunkAt((int)mouse.X, (int)mouse.Y);
+        if (chunk != null) DrawRect(new Rect2(chunk.X, chunk.Y, ChunkSize, ChunkSize), new Color(1, 1, 1, 0.04f));
     }
 }
