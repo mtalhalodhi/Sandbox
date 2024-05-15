@@ -17,4 +17,9 @@ public static class Pixels
         Color = Colors.PaleGoldenrod,
         Material = PixelMaterial.Powder
     };
+
+    public static Pixel Water = new Pixel() {
+        Color = Colors.LightSkyBlue,
+        Material = PixelMaterial.Liquid
+    };
 }

@@ -20,7 +20,7 @@ public partial class WorldEditor : Node2D
 
         int halfSize = 4;
 
-        if (Input.IsActionPressed("left_click"))
+        if (Input.IsKeyPressed(Key.A))
         {
             for (int x = mx - halfSize; x < mx + halfSize; x++)
             {
@@ -30,14 +30,33 @@ public partial class WorldEditor : Node2D
                 }
             }
         }
-
-        if (Input.IsActionPressed("right_click"))
+        if (Input.IsKeyPressed(Key.S))
         {
             for (int x = mx - halfSize; x < mx + halfSize; x++)
             {
                 for (int y = my - halfSize; y < my + halfSize; y++)
                 {
                     world[x, y] = Pixels.Stone;
+                }
+            }
+        }
+        if (Input.IsKeyPressed(Key.D))
+        {
+            for (int x = mx - halfSize; x < mx + halfSize; x++)
+            {
+                for (int y = my - halfSize; y < my + halfSize; y++)
+                {
+                    world[x, y] = Pixels.Water;
+                }
+            }
+        }
+        if (Input.IsKeyPressed(Key.F))
+        {
+            for (int x = mx - halfSize; x < mx + halfSize; x++)
+            {
+                for (int y = my - halfSize; y < my + halfSize; y++)
+                {
+                    world[x, y] = Pixels.Air;
                 }
             }
         }
