@@ -46,16 +46,6 @@ public partial class WorldEditor : Node2D
             {
                 for (int y = my - halfSize; y < my + halfSize; y++)
                 {
-                    world[x, y] = Pixels.Water;
-                }
-            }
-        }
-        if (Input.IsKeyPressed(Key.F))
-        {
-            for (int x = mx - halfSize; x < mx + halfSize; x++)
-            {
-                for (int y = my - halfSize; y < my + halfSize; y++)
-                {
                     world[x, y] = Pixels.Air;
                 }
             }
