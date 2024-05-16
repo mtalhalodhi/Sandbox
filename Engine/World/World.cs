@@ -32,6 +32,8 @@ public partial class World : Node2D
 
     public override void _Draw()
     {
+        if (!Settings.ShowDebugData) return;
+
         var areaRect = GetChunkAreaRect();
         DrawRect(areaRect, Colors.WhiteSmoke, false);
 

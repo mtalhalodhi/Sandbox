@@ -98,18 +98,20 @@ public partial class Chunk : Sprite2D
 
     public override void _Draw()
     {
-        DrawRect(new Rect2(0, 0, Size, Size), new Color(1, 1, 1, 0.25f), false);
         ((ImageTexture)Texture).Update(image);
 
-        if (_dirty)
-        {
-            var pos = new Vector2(X, Y);
-            DrawRect(new Rect2(0, 0, Size, Size), new Color(1, .2f, .2f, 0.7f), false, .5f);
+        if (!Settings.ShowDebugData) return;
 
-            var dsStart = DirtyRectMin - pos;
-            var dsEnd = DirtyRectMax - pos;
+        DrawRect(new Rect2(0, 0, Size, Size), new Color(1, 1, 1, 0.25f), false);
 
-            DrawRect(new Rect2(dsStart, dsEnd - dsStart), new Color(.8f, .6f, .9f, 1f), false, .5f);
-        }
+        if (!_dirty) return;
+
+        var pos = new Vector2(X, Y);
+        DrawRect(new Rect2(0, 0, Size, Size), new Color(1, .2f, .2f, 0.7f), false, .5f);
+
+        var dsStart = DirtyRectMin - pos;
+        var dsEnd = DirtyRectMax - pos;
+
+        DrawRect(new Rect2(dsStart, dsEnd - dsStart), new Color(.8f, .6f, .9f, 1f), false, .5f);
     }
 }
