@@ -4,5 +4,9 @@ using System;
 public struct Pixel
 {
     public Color Color;
-    public PixelMaterial Material;
+    public PixelType Type;
+    public PixelBehavior Behavior;
+
+    public int VelocityX;
+    public int VelocityY;
 }
