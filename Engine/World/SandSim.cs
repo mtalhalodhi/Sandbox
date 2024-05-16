@@ -7,7 +7,7 @@ public partial class World : Node2D
 
     Dictionary<Vector2, PixelMove> moves = new Dictionary<Vector2, PixelMove>();
 
-    void processSandSim()
+    void ProcessSandSim()
     {
         moves.Clear();
 

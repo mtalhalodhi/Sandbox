@@ -34,7 +34,7 @@ public partial class World : Node2D
         }
     }
 
-    void InstantiateChunk(int x, int y)
+    public void InstantiateChunk(int x, int y)
     {
         var index = ChunkIndex(x, y);
         if (ChunkLookup.ContainsKey(index)) return;
@@ -48,7 +48,7 @@ public partial class World : Node2D
         AddChild(chunk);
     }
 
-    void RemoveChunk(Chunk chunk)
+    public void RemoveChunk(Chunk chunk)
     {
         Chunks.Remove(chunk);
         ChunkLookup.Remove(new Vector2(chunk.X, chunk.Y));
@@ -74,6 +74,12 @@ public partial class World : Node2D
     {
         ChunkLookup.TryGetValue(ChunkIndex(x, y), out var chunk);
         return chunk;
+    }
+
+    public void KeepChunkAlive(int x, int y)
+    {
+        var chunk = ChunkAt(x, y);
+        if (chunk != null) chunk.KeepPixelAlive(x, y);
     }
 
 }

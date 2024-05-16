@@ -62,6 +62,8 @@ public partial class Chunk : Sprite2D
 
         dirtyRectBufferMax.X = Mathf.Clamp(Mathf.Max(x + 2, dirtyRectBufferMax.X), X, X + Size);
         dirtyRectBufferMax.Y = Mathf.Clamp(Mathf.Max(y + 2, dirtyRectBufferMax.Y), Y, Y + Size);
+
+        _dirty = true;
     }
 
     public void UpdateDirtyRect()

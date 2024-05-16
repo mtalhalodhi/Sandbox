@@ -22,11 +22,31 @@ public partial class World : Node2D
         var swap = this[x1, y1];
         this[x1, y1] = this[x2, y2];
         this[x2, y2] = swap;
+
+        WakeChunksOnEdge(x1, y1);
     }
 
     public void MovePixelTo(int x1, int y1, int x2, int y2)
     {
         this[x2, y2] = this[x1, y1];
+        WakeChunksOnEdge(x1, y1);
+    }
+
+    public void WakeChunksOnEdge(int x, int y) {
+        var chunk = ChunkAt(x, y);
+
+        int cx = 0;
+        int cy = 0;
+
+        if (x == chunk.X) cx = -1;
+        if (x == chunk.X + ChunkSize) cx = 1;
+
+        if (y == chunk.Y) cy = -1;
+        if (y == chunk.Y + ChunkSize) cy = 1;
+
+        if (cx != 0) KeepChunkAlive(x + cx, y);
+        if (cy != 0) KeepChunkAlive(x, y + cy);
+        if (cx != 0 && cy != 0) KeepChunkAlive(x + cx, y + cy);
     }
 
     public override void _Ready()
@@ -41,7 +61,7 @@ public partial class World : Node2D
 
     public override void _PhysicsProcess(double delta)
     {
-        processSandSim();
+        ProcessSandSim();
     }
 
     public override void _Draw()
