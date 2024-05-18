@@ -63,9 +63,11 @@ public partial class World : Node2D
 
     public void SwapPixels(int x1, int y1, int x2, int y2)
     {
-        var swap = this[x1, y1];
-        this[x1, y1] = this[x2, y2];
-        this[x2, y2] = swap;
+        var a = this[x1, y1];
+        var b = this[x2, y2];
+
+        this[x1, y1] = b;
+        this[x2, y2] = a;
 
         WakeChunksOnEdge(x1, y1);
         WakeChunksOnEdge(x2, y2);
@@ -74,6 +76,7 @@ public partial class World : Node2D
     public void MovePixelTo(int x1, int y1, int x2, int y2)
     {
         this[x2, y2] = this[x1, y1];
+        this[x1, y1] = Pixels.Air;
         WakeChunksOnEdge(x1, y1);
         WakeChunksOnEdge(x2, y2);
     }
