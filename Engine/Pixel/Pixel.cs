@@ -10,3 +10,17 @@ public struct Pixel
     public int VelocityX;
     public int VelocityY;
 }
+
+public enum PixelBehavior
+{
+    None, Solid, Powder, Liquid, Gas
+}
+
+public enum PixelType
+{
+    None,
+    Air,
+    Stone,
+    Sand,
+    Water
+}
