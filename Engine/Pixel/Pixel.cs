@@ -19,7 +19,6 @@ public enum PixelBehavior
 public enum PixelType
 {
     None,
-    Air,
     Stone,
     Sand,
     Water

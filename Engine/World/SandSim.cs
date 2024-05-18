@@ -1,7 +1,12 @@
 using Godot;
+using System.Collections.Generic;
 
 public partial class SandSim
 {
+    struct PixelMove { public int X1, Y1, X2, Y2; }
+
+    Dictionary<Vector2, PixelMove> moves = new Dictionary<Vector2, PixelMove>();
+
     public World World;
 
     const double SPF = 1.0 / 60.0;
@@ -13,6 +18,8 @@ public partial class SandSim
         if (timeSinceUpdate <= SPF) return;
         timeSinceUpdate = 0;
 
+        moves.Clear();
+
         foreach (var chunk in World.Chunks)
         {
             if (chunk.Dirty) processChunk(chunk);
@@ -21,6 +28,12 @@ public partial class SandSim
         foreach (var chunk in World.Chunks)
         {
             chunk.UpdateDirtyRect();
+        }
+
+        foreach (var pair in moves)
+        {
+            var move = pair.Value;
+            World.SwapPixels(move.X1, move.Y1, move.X2, move.Y2);
         }
     }
 
@@ -48,30 +61,55 @@ public partial class SandSim
         var processed = false;
 
         var pixel = World[x, y];
-
-        var dn = World[x, y + 1];
-        var dl = World[x - 1, y + 1];
-        var dr = World[x + 1, y + 1];
+        var down = World[x, y + 1];
+        var downLeft = World[x - 1, y + 1];
+        var downRight = World[x + 1, y + 1];
 
         if (pixel.Behavior == PixelBehavior.Powder)
         {
-            if (dn.Behavior == PixelBehavior.None)
+            if (down.Behavior == PixelBehavior.None)
             {
-                World.SwapPixels(x, y, x, y + 1);
+                addMove(x, y, x, y + 1);
                 processed = true;
             }
-            else if (dl.Type == PixelType.None)
+            else if (downLeft.Behavior == PixelBehavior.None && downRight.Behavior == PixelBehavior.None)
             {
-                World.SwapPixels(x, y, x - 1, y + 1);
+                if (Utils.FlipCoin())
+                {
+                    addMove(x, y, x - 1, y + 1);
+                }
+                else
+                {
+                    addMove(x, y, x + 1, y + 1);
+                }
                 processed = true;
             }
-            else if (dr.Type == PixelType.None)
+            else if (downLeft.Behavior == PixelBehavior.None)
             {
-                World.SwapPixels(x, y, x + 1, y + 1);
+                addMove(x, y, x - 1, y + 1);
+                processed = true;
+            }
+            else if (downRight.Behavior == PixelBehavior.None)
+            {
+                addMove(x, y, x + 1, y + 1);
                 processed = true;
             }
         }
 
         return processed;
+    }
+
+    void addMove(int X1, int Y1, int X2, int Y2)
+    {
+        var key = new Vector2(X2, Y2);
+
+        if (!moves.ContainsKey(key))
+        {
+            moves.Add(new Vector2(X2, Y2), new PixelMove() { X1 = X1, Y1 = Y1, X2 = X2, Y2 = Y2 });
+        }
+        else if (Utils.FlipCoin())
+        {
+            moves[key] = new PixelMove() { X1 = X1, Y1 = Y1, X2 = X2, Y2 = Y2 };
+        }
     }
 }
