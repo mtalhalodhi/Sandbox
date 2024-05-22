@@ -33,7 +33,15 @@ public partial class SandSim
         foreach (var pair in moves)
         {
             var move = pair.Value;
-            World.MovePixelTo(move.X1, move.Y1, move.X2, move.Y2);
+            var target = World[move.X2, move.Y2];
+            if (target.Behavior != PixelBehavior.None)
+            {
+                World.SwapPixels(move.X1, move.Y1, move.X2, move.Y2);
+            }
+            else
+            {
+                World.MovePixelTo(move.X1, move.Y1, move.X2, move.Y2);
+            }
         }
     }
 
@@ -88,13 +96,21 @@ public partial class SandSim
             {
                 return TryMovingInDirection(x, y, Direction.DownRight);
             }
-            else {
+            else
+            {
                 return TryMovingInDirection(x, y, Direction.DownLeft);
             }
         }
 
         if (TryMovingInDirection(x, y, Direction.DownRight)) return true;
         if (TryMovingInDirection(x, y, Direction.DownLeft)) return true;
+
+        var downPixel = World[x, y + 1];
+        if (downPixel.Behavior == PixelBehavior.Liquid)
+        {
+            AddMove(x, y, x, y + 1);
+            return true;
+        }
 
         return false;
     }
@@ -114,7 +130,8 @@ public partial class SandSim
             {
                 return TryMovingInDirection(x, y, Direction.Right);
             }
-            else {
+            else
+            {
                 return TryMovingInDirection(x, y, Direction.Left);
             }
         }
@@ -131,7 +148,8 @@ public partial class SandSim
             {
                 return TryMovingInDirection(x, y, Direction.DownRight);
             }
-            else {
+            else
+            {
                 return TryMovingInDirection(x, y, Direction.DownLeft);
             }
         }
