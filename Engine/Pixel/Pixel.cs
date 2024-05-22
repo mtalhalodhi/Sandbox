@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public struct Pixel
 {
@@ -7,8 +6,9 @@ public struct Pixel
     public PixelType Type;
     public PixelBehavior Behavior;
 
-    public int VelocityX;
-    public int VelocityY;
+    public Vector2 Velocity = new Vector2(1, 1);
+
+    public Pixel() { }
 }
 
 public enum PixelBehavior

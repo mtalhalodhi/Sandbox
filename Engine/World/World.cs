@@ -61,6 +61,19 @@ public partial class World : Node2D
         }
     }
 
+    public Pixel this[Vector2 pos]
+    {
+        get => this[(int)pos.X, (int)pos.Y];
+        set => this[(int)pos.X, (int)pos.Y] = value;
+    }
+
+    public bool IsEmpty(int x, int y)
+    {
+        return this[x, y].Type == PixelType.None;
+    }
+
+    public bool IsEmpty(Vector2 pos) => IsEmpty((int)pos.X, (int)pos.Y);
+
     public void SwapPixels(int x1, int y1, int x2, int y2)
     {
         var a = this[x1, y1];

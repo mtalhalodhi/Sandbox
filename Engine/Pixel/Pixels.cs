@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public static class Pixels
 {
@@ -18,14 +17,17 @@ public static class Pixels
     public static Pixel Sand = new Pixel()
     {
         Color = Colors.PaleGoldenrod,
+
         Type = PixelType.Sand,
-        Behavior = PixelBehavior.Powder
+        Behavior = PixelBehavior.Powder,
+        Velocity = new Vector2(2, 2)
     };
 
     public static Pixel Water = new Pixel()
     {
         Color = Colors.LightSkyBlue,
         Type = PixelType.Water,
-        Behavior = PixelBehavior.Liquid
+        Behavior = PixelBehavior.Liquid,
+        Velocity = new Vector2(6, 2)
     };
 }

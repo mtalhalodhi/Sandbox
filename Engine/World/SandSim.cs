@@ -22,7 +22,7 @@ public partial class SandSim
 
         foreach (var chunk in World.Chunks)
         {
-            if (chunk.Dirty) processChunk(chunk);
+            if (chunk.Dirty) ProcessChunk(chunk);
         }
 
         foreach (var chunk in World.Chunks)
@@ -33,11 +33,11 @@ public partial class SandSim
         foreach (var pair in moves)
         {
             var move = pair.Value;
-            World.SwapPixels(move.X1, move.Y1, move.X2, move.Y2);
+            World.MovePixelTo(move.X1, move.Y1, move.X2, move.Y2);
         }
     }
 
-    void processChunk(Chunk chunk)
+    void ProcessChunk(Chunk chunk)
     {
         var xStart = (int)chunk.DirtyRectMin.X;
         var yStart = (int)chunk.DirtyRectMin.Y;
@@ -50,66 +50,135 @@ public partial class SandSim
         {
             for (int y = yStart; y < yEnd; y++)
             {
-                if (processPixelAt(x, y)) processed = true;
+                if (ProcessPixelAt(x, y)) processed = true;
             }
         }
         chunk.Dirty = processed;
     }
 
-    bool processPixelAt(int x, int y)
+    bool ProcessPixelAt(int x, int y)
     {
-        var processed = false;
-
         var pixel = World[x, y];
-        var down = World[x, y + 1];
-        var downLeft = World[x - 1, y + 1];
-        var downRight = World[x + 1, y + 1];
 
         if (pixel.Behavior == PixelBehavior.Powder)
         {
-            if (down.Behavior == PixelBehavior.None)
+            return ProcessPowder(x, y);
+        }
+
+        if (pixel.Behavior == PixelBehavior.Liquid)
+        {
+            return ProcessLiquid(x, y);
+        }
+
+        return false;
+    }
+
+    bool ProcessPowder(int x, int y)
+    {
+        var pos = new Vector2(x, y);
+
+        if (TryMovingInDirection(x, y, Direction.Down)) return true;
+
+        var dr = World.IsEmpty(pos + Utils.VectorForDirection(Direction.DownRight));
+        var dl = World.IsEmpty(pos + Utils.VectorForDirection(Direction.DownLeft));
+
+        if (dr && dl)
+        {
+            if (Utils.FlipCoin())
             {
-                addMove(x, y, x, y + 1);
-                processed = true;
+                return TryMovingInDirection(x, y, Direction.DownRight);
             }
-            else if (downLeft.Behavior == PixelBehavior.None && downRight.Behavior == PixelBehavior.None)
-            {
-                if (Utils.FlipCoin())
-                {
-                    addMove(x, y, x - 1, y + 1);
-                }
-                else
-                {
-                    addMove(x, y, x + 1, y + 1);
-                }
-                processed = true;
-            }
-            else if (downLeft.Behavior == PixelBehavior.None)
-            {
-                addMove(x, y, x - 1, y + 1);
-                processed = true;
-            }
-            else if (downRight.Behavior == PixelBehavior.None)
-            {
-                addMove(x, y, x + 1, y + 1);
-                processed = true;
+            else {
+                return TryMovingInDirection(x, y, Direction.DownLeft);
             }
         }
 
-        return processed;
+        if (TryMovingInDirection(x, y, Direction.DownRight)) return true;
+        if (TryMovingInDirection(x, y, Direction.DownLeft)) return true;
+
+        return false;
     }
 
-    void addMove(int X1, int Y1, int X2, int Y2)
+    bool ProcessLiquid(int x, int y)
     {
-        var key = new Vector2(X2, Y2);
+        var pos = new Vector2(x, y);
+
+        if (TryMovingInDirection(x, y, Direction.Down)) return true;
+
+        var r = World.IsEmpty(pos + Utils.VectorForDirection(Direction.DownRight));
+        var l = World.IsEmpty(pos + Utils.VectorForDirection(Direction.DownLeft));
+
+        if (r && l)
+        {
+            if (Utils.FlipCoin())
+            {
+                return TryMovingInDirection(x, y, Direction.Right);
+            }
+            else {
+                return TryMovingInDirection(x, y, Direction.Left);
+            }
+        }
+
+        if (TryMovingInDirection(x, y, Direction.Left)) return true;
+        if (TryMovingInDirection(x, y, Direction.Right)) return true;
+
+        var dr = World.IsEmpty(pos + Utils.VectorForDirection(Direction.DownRight));
+        var dl = World.IsEmpty(pos + Utils.VectorForDirection(Direction.DownLeft));
+
+        if (dr && dl)
+        {
+            if (Utils.FlipCoin())
+            {
+                return TryMovingInDirection(x, y, Direction.DownRight);
+            }
+            else {
+                return TryMovingInDirection(x, y, Direction.DownLeft);
+            }
+        }
+
+        if (TryMovingInDirection(x, y, Direction.DownRight)) return true;
+        if (TryMovingInDirection(x, y, Direction.DownLeft)) return true;
+
+        return false;
+    }
+
+    bool TryMovingInDirection(int x, int y, Direction direction)
+    {
+        var p = World[x, y];
+
+        var a = new Vector2(x, y);
+        var b = Utils.VectorForDirection(direction);
+
+        b = b * p.Velocity + a;
+
+        var points = BresenhamLine.Compute(a, b);
+        if (points.Count <= 1) return false;
+
+        int index = 1;
+        if (!World.IsEmpty(points[index])) return false;
+
+        while (index < points.Count - 1 && World.IsEmpty(points[index + 1]))
+        {
+            index++;
+        }
+
+        AddMove(x, y, points[index]);
+        return true;
+    }
+
+    void AddMove(int x1, int y1, int x2, int y2)
+    {
+        var key = new Vector2(x2, y2);
 
         if (!moves.ContainsKey(key))
         {
-            moves.Add(new Vector2(X2, Y2), new PixelMove() { X1 = X1, Y1 = Y1, X2 = X2, Y2 = Y2 });
+            moves.Add(key, new PixelMove() { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2 });
         }
         else if (Utils.FlipCoin())
         {
-            moves[key] = new PixelMove() { X1 = X1, Y1 = Y1, X2 = X2, Y2 = Y2 };
+            moves[key] = new PixelMove() { X1 = x1, Y1 = y1, X2 = x2, Y2 = y2 };
         }
     }
+
+    void AddMove(int x1, int y1, Vector2 target) => AddMove(x1, y1, (int)target.X, (int)target.Y);
 }

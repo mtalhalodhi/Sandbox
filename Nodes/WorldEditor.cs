@@ -1,7 +1,4 @@
 using Godot;
-using System;
-using System.Drawing;
-using System.Linq;
 
 public partial class WorldEditor : Node2D
 {
@@ -41,6 +38,16 @@ public partial class WorldEditor : Node2D
             }
         }
         if (Input.IsKeyPressed(Key.D))
+        {
+            for (int x = mx - halfSize; x < mx + halfSize; x++)
+            {
+                for (int y = my - halfSize; y < my + halfSize; y++)
+                {
+                    world[x, y] = Pixels.Water;
+                }
+            }
+        }
+        if (Input.IsKeyPressed(Key.F))
         {
             for (int x = mx - halfSize; x < mx + halfSize; x++)
             {
