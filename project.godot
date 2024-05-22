@@ -19,7 +19,7 @@ config/icon="res://greeny.png"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/stretch/mode="viewport"
+window/stretch/mode="canvas_items"
 window/vsync/vsync_mode=0
 
 [dotnet]
@@ -46,3 +46,7 @@ right_click={
 [physics]
 
 common/physics_ticks_per_second=30
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

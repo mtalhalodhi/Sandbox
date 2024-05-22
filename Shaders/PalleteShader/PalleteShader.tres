@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://daw6fmobfry7v"]
+
+[ext_resource type="Shader" path="res://Shaders/PalleteShader/PalleteShader.gdshader" id="1_6pids"]
+[ext_resource type="Texture2D" uid="uid://snijvoiutksg" path="res://Shaders/PalleteShader/Palletes/duel-1x.png" id="2_k0rdd"]
+
+[resource]
+shader = ExtResource("1_6pids")
+shader_parameter/palette = ExtResource("2_k0rdd")

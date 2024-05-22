@@ -1,12 +1,28 @@
-[gd_scene load_steps=3 format=3 uid="uid://s3fsni1s4k8t"]
+[gd_scene load_steps=6 format=3 uid="uid://s3fsni1s4k8t"]
 
 [ext_resource type="Script" path="res://Nodes/WorldEditor.cs" id="1_h4p1e"]
+[ext_resource type="Material" uid="uid://daw6fmobfry7v" path="res://Shaders/PalleteShader/PalleteShader.tres" id="1_pbsvf"]
 [ext_resource type="Script" path="res://Engine/World/World.cs" id="1_rcff0"]
+
+[sub_resource type="Gradient" id="Gradient_y0sf6"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_swryn"]
+gradient = SubResource("Gradient_y0sf6")
 
 [node name="TestScene" type="Node2D"]
 
 [node name="Camera" type="Camera2D" parent="."]
+z_index = 4096
 zoom = Vector2(4, 4)
+metadata/_edit_group_ = true
+
+[node name="PalleteShader" type="Sprite2D" parent="Camera"]
+material = ExtResource("1_pbsvf")
+texture = SubResource("GradientTexture1D_swryn")
+region_enabled = true
+region_rect = Rect2(0, 0, 480, 270)
 
 [node name="World" type="Node2D" parent="." node_paths=PackedStringArray("cam")]
 script = ExtResource("1_rcff0")
