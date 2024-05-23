@@ -19,6 +19,7 @@ zoom = Vector2(4, 4)
 metadata/_edit_group_ = true
 
 [node name="PalleteShader" type="Sprite2D" parent="Camera"]
+visible = false
 material = ExtResource("1_pbsvf")
 texture = SubResource("GradientTexture1D_swryn")
 region_enabled = true
