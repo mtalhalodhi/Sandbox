@@ -28,7 +28,7 @@ project/assembly_name="Sandbox"
 
 [global]
 
-ShowDebugData=true
+ShowDebugData=false
 
 [input]
 

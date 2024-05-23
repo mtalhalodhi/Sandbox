@@ -1,10 +1,10 @@
-using System;
 using Godot;
 
-public partial class Chunk : Sprite2D
+public partial class Chunk : StaticBody2D
 {
     private Pixel[] pixels;
 
+    Sprite2D sprite;
     Image image;
 
     public int Size;
@@ -21,6 +21,8 @@ public partial class Chunk : Sprite2D
             _dirty = value;
         }
     }
+
+    public bool CollidersNeedRefresh { get; set; }
 
     public Vector2 DirtyRectMin;
     public Vector2 DirtyRectMax;
@@ -75,6 +77,32 @@ public partial class Chunk : Sprite2D
         dirtyRectBufferMax = new Vector2(X - 1, Y - 1);
     }
 
+    //https://forum.godotengine.org/t/how-can-i-automatically-create-a-collisionpolygon2d-from-an-image-using-gdnative-or-gdscript/22437/3
+    public void GenerateColliders()
+    {
+        CollidersNeedRefresh = false;
+
+        var children = GetChildren();
+        foreach (var child in children)
+        {
+            if (child is CollisionPolygon2D) child.QueueFree();
+        }
+
+        var bitmap = new Bitmap();
+        bitmap.CreateFromImageAlpha(image, 0.99f);
+        var rect = new Rect2I(0, 0, Size, Size);
+        var polygons = bitmap.OpaqueToPolygons(rect, 0.5f);
+        for (int i = 0; i < polygons.Count; i++)
+        {
+            var collider = new CollisionPolygon2D
+            {
+                Polygon = polygons[i],
+                BuildMode = CollisionPolygon2D.BuildModeEnum.Solids
+            };
+            AddChild(collider);
+        }
+    }
+
     public override void _Ready()
     {
         X = (int)GlobalPosition.X;
@@ -91,14 +119,19 @@ public partial class Chunk : Sprite2D
             }
         }
 
-        Texture = ImageTexture.CreateFromImage(image);
-        TextureFilter = TextureFilterEnum.Nearest;
-        Offset = new Vector2(Size / 2, Size / 2);
+        sprite = new Sprite2D
+        {
+            Texture = ImageTexture.CreateFromImage(image),
+            Offset = new Vector2(Size / 2, Size / 2),
+            ShowBehindParent = true
+        };
+
+        AddChild(sprite);
     }
 
     public override void _Draw()
     {
-        ((ImageTexture)Texture).Update(image);
+        ((ImageTexture)sprite.Texture).Update(image);
 
         if (!Settings.ShowDebugData) return;
 

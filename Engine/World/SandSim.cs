@@ -12,7 +12,7 @@ public partial class SandSim
     const double SPF = 1.0 / 60.0;
     double timeSinceUpdate = 0;
 
-    public void ProcessSandSim(double delta)
+    public void Process(double delta)
     {
         timeSinceUpdate += delta;
         if (timeSinceUpdate <= SPF) return;

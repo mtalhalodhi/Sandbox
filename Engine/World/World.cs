@@ -13,6 +13,7 @@ public partial class World : Node2D
     public Dictionary<Vector2, Chunk> ChunkLookup = new Dictionary<Vector2, Chunk>();
 
     SandSim sandSim = new SandSim();
+    PhysicsSim physicsSim = new PhysicsSim();
 
     #endregion
 
@@ -22,11 +23,14 @@ public partial class World : Node2D
     {
         RefreshChunks();
         sandSim.World = this;
+        physicsSim.World = this;
     }
 
     public override void _Process(double delta)
     {
-        sandSim.ProcessSandSim(delta);
+        sandSim.Process(delta);
+        physicsSim.Process(delta);
+
         QueueRedraw();
     }
 
@@ -58,6 +62,7 @@ public partial class World : Node2D
             var chunk = ChunkAt(x, y);
             chunk[x, y] = value;
             chunk.Dirty = true;
+            chunk.CollidersNeedRefresh = true;
         }
     }
 

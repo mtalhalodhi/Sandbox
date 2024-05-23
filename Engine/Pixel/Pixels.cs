@@ -25,7 +25,7 @@ public static class Pixels
 
     public static Pixel Water = new Pixel()
     {
-        Color = Colors.LightSkyBlue,
+        Color = new Color(Colors.LightSkyBlue, 0.8f),
         Type = PixelType.Water,
         Behavior = PixelBehavior.Liquid,
         Velocity = new Vector2(6, 2)
